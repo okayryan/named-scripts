@@ -28,26 +28,28 @@ SUFFIX=.zone
 # parameters:
 # zonename (IE. source.kohlerville.com.zone
 # domainname (IE. source.kohlerville.com)
+# location (IE. /var/named/chroot/var/named/primary/internal
 function checkzone()
 {
-	if [ ${#} -ne 2 ]
+	if [ ${#} -ne 3 ]
 	then
 		echo "Exiting, checkzone() takes \
-		only two arguments. Got ${#}"
+		only three arguments. Got ${#}"
 		exit 1
 	fi
 
 	zonename=${1}
 	domainname=${2}
+	location=${3}
 
 	# run it in quiet mode first
-	${NAMEDCHECKZONE} -q -w ${ZONELOC} ${zonename} ${domainname}
+	${NAMEDCHECKZONE} -q -w ${location} ${zonename} ${domainname}
 
 	# compare the return code to see if we need to run it
 	# again to display the error to the user
 	if [ ${?} -ne 0 ]
 	then
-		${NAMEDCHECKZONE} -w ${ZONELOC} ${zonename} ${domainname}
+		${NAMEDCHECKZONE} -w ${location} ${zonename} ${domainname}
 		exit 2
 	fi
 }
@@ -78,12 +80,12 @@ function checkzonefiles()
 		case "${base}" in
 		192.168 | lightsout.source.kohlerville.com)
 			# Special case for reverse and forward zones
-			checkzone lightsout.source.kohlerville.com ${zonename}
+			checkzone lightsout.source.kohlerville.com ${zonename} ${zoneloc}
 		*)
 			# This works for zone files that are named
 			# domainname.zone
 			base=`${BASENAME} ${zonename} ${SUFFIX}`
-			checkzone ${base} ${zonename}
+			checkzone ${base} ${zonename} ${zoneloc}
 		;;
 		esac
 	done
