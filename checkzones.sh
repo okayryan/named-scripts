@@ -54,6 +54,9 @@ function checkzone()
 	fi
 }
 
+# checkzonefiles() sets up for us to check our zone
+# parameters:
+# location (IE. /var/named/chroot/var/named/primary/internal
 function checkzonefiles()
 {
 	if [ ${#} -ne 1 ]
